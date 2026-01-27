@@ -32,13 +32,50 @@ export async function POST(request) {
 
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
 
-    // Get the base URL from environment or request origin
+    // Get the base URL - try multiple methods for different environments
     let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    
     if (!baseUrl) {
-      const origin = request.headers.get('origin') || request.headers.get('x-forwarded-proto') + '://' + request.headers.get('x-forwarded-host');
-      baseUrl = origin || 'http://localhost:3000';
+      // Method 1: Use Vercel's built-in URL (for Vercel deployments)
+      if (process.env.VERCEL_URL) {
+        const protocol = process.env.VERCEL_ENV === 'production' ? 'https' : 'https';
+        baseUrl = `${protocol}://${process.env.VERCEL_URL}`;
+      }
+      // Method 2: Extract from request URL
+      else if (request.url) {
+        try {
+          const requestUrl = new URL(request.url);
+          baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+        } catch (e) {
+          baseUrl = 'http://localhost:3000';
+        }
+      }
+      // Method 3: Try request headers
+      else {
+        const origin = request.headers.get('origin');
+        const xForwardedProto = request.headers.get('x-forwarded-proto');
+        const xForwardedHost = request.headers.get('x-forwarded-host');
+        
+        if (origin) {
+          baseUrl = origin;
+        } else if (xForwardedProto && xForwardedHost) {
+          baseUrl = `${xForwardedProto}://${xForwardedHost}`;
+        } else {
+          baseUrl = 'http://localhost:3000';
+        }
+      }
     }
+    
     const pasteUrl = `${baseUrl}/paste/${result.id}`;
+    
+    // Log for debugging
+    console.log('🔗 Generated paste URL:', {
+      baseUrl,
+      pasteUrl,
+      vercelUrl: process.env.VERCEL_URL,
+      nextPublicUrl: process.env.NEXT_PUBLIC_APP_URL,
+      environment: process.env.VERCEL_ENV || 'local',
+    });
 
     return NextResponse.json(
       {
