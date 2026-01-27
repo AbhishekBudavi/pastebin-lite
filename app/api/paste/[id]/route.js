@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getPaste } from '@/lib/db/operations';
+import { getPaste, decrementViews } from '@/lib/db/operations';
 
 export async function GET(request, { params }) {
   try {
     const { id } = params;
+    
+    // First check if paste exists and is not expired/exhausted
     const paste = await getPaste(id);
 
     if (!paste) {
@@ -14,6 +16,28 @@ export async function GET(request, { params }) {
         },
         { status: 404 }
       );
+    }
+
+    // Decrement views if there's a view limit
+    if (paste.views_remaining !== null) {
+      const decremented = await decrementViews(id);
+      
+      if (!decremented) {
+        // Views were exhausted before we could decrement
+        return NextResponse.json(
+          {
+            error: 'Not found',
+            message: 'The requested paste does not exist or has expired',
+          },
+          { status: 404 }
+        );
+      }
+
+      // Fetch updated paste to get new remaining views count
+      const updatedPaste = await getPaste(id);
+      if (updatedPaste) {
+        paste.views_remaining = updatedPaste.views_remaining;
+      }
     }
 
     return NextResponse.json({

@@ -22,10 +22,13 @@ export async function POST(request) {
       );
     }
 
+    // Support deterministic time for testing via header
+    const testNow = request.headers.get('X-Test-Now');
+    
     const ttlSeconds = parseTTL(ttl);
     const viewLimit = parseViewLimit(view_limit);
     const pasteId = generatePasteId();
-    const expiresAt = calculateExpiryTime(ttlSeconds);
+    const expiresAt = calculateExpiryTime(ttlSeconds, testNow);
 
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
 

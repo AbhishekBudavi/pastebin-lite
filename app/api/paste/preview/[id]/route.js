@@ -4,7 +4,11 @@ import { getPaste } from '@/lib/db/operations';
 export async function GET(request, { params }) {
   try {
     const { id } = params;
-    const paste = await getPaste(id);
+    
+    // Support deterministic time for testing via header
+    const testNow = request.headers.get('X-Test-Now');
+    
+    const paste = await getPaste(id, testNow);
 
     if (!paste) {
       return NextResponse.json(
