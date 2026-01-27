@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getPaste, decrementViews } from '@/lib/db/operations';
 
+// Mark route as dynamic - cannot be cached/prerendered
+export const dynamic = 'force-dynamic';
+
 export async function GET(request, { params }) {
   try {
     const { id } = params;

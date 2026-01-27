@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db/pool';
 
+// Mark route as dynamic - cannot be cached/prerendered
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     // Support deterministic time for testing via header

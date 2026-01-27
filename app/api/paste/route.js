@@ -8,6 +8,9 @@ import {
 } from '@/lib/utils/helpers';
 import { createPaste } from '@/lib/db/operations';
 
+// Mark route as dynamic - cannot be cached/prerendered
+export const dynamic = 'force-dynamic';
+
 export async function POST(request) {
   try {
     const { content, ttl, view_limit } = await request.json();
