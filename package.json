@@ -1,0 +1,23 @@
+{
+  "name": "pastebin-lite",
+  "version": "1.0.0",
+  "description": "Share temporary code snippets securely - Vercel Ready",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^14.0.0",
+    "@vercel/postgres": "^0.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "eslint": "^8.54.0",
+    "eslint-config-next": "^14.0.0"
+  }
+}

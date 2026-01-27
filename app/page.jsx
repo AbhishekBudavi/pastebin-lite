@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -32,7 +34,7 @@ export default function Home() {
       if (viewLimit) body.view_limit = parseInt(viewLimit);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/paste`,
+        `/api/paste`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
