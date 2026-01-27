@@ -47,6 +47,7 @@ async function startServer() {
     console.log('Initializing database schema...');
     await initializeSchema();
     console.log('✓ Schema initialized');
+console.log(process.env.NEXT_PUBLIC_APP_URL);
 
     // Start server
     app.listen(PORT, () => {
