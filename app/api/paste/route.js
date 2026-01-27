@@ -32,7 +32,12 @@ export async function POST(request) {
 
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // Get the base URL from environment or request origin
+    let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!baseUrl) {
+      const origin = request.headers.get('origin') || request.headers.get('x-forwarded-proto') + '://' + request.headers.get('x-forwarded-host');
+      baseUrl = origin || 'http://localhost:3000';
+    }
     const pasteUrl = `${baseUrl}/paste/${result.id}`;
 
     return NextResponse.json(
