@@ -54,10 +54,8 @@ export default function Home() {
       setTtl('');
       setViewLimit('');
 
-      // Redirect to paste view after 5 seconds (gives user time to copy)
-      setTimeout(() => {
-        router.push(`/paste/${data.id}`);
-      }, 5000);
+      // Don't auto-redirect - let user manually view or copy link
+      // Remove the setTimeout that redirects
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create paste');
     } finally {
