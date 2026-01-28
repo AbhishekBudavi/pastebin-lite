@@ -72,49 +72,6 @@ npm run dev
 # Open http://localhost:3000
 ```
 
-## 📦 Deployment
-
-### Deploy to Vercel (30 seconds)
-
-#### Method 1: GitHub (Recommended)
-```bash
-# Push code to GitHub
-git push origin main
-
-# In Vercel Dashboard:
-# 1. Click "Add New" → "Project"
-# 2. Select your GitHub repository
-# 3. Add POSTGRES_URL to Environment Variables
-# 4. Click "Deploy"
-```
-
-#### Method 2: Vercel CLI
-```bash
-npm i -g vercel
-vercel --prod
-```
-
-#### Method 3: Drag & Drop
-Go to [Vercel Dashboard](https://vercel.com/dashboard) and import your GitHub repo.
-
-### Database Setup
-
-**Option A: Vercel Postgres** (Recommended)
-- Easiest setup
-- Automatic scaling
-- Built-in backups
-- Click: Storage → Create Database → Postgres
-
-**Option B: External PostgreSQL**
-- Supabase
-- Railway
-- AWS RDS
-- DigitalOcean
-
-## 📖 Documentation
-
-- **[VERCEL_QUICK_START.md](./VERCEL_QUICK_START.md)** - 3-minute setup guide
-- **[VERCEL_DEPLOYMENT_GUIDE.md](./VERCEL_DEPLOYMENT_GUIDE.md)** - Complete deployment guide with troubleshooting
 
 ## 🗂️ Project Structure
 
@@ -202,25 +159,9 @@ Response (200):
 }
 ```
 
-## 🔒 Security
 
-- ✅ Input validation on all endpoints
-- ✅ SQL injection prevention (parameterized queries)
-- ✅ HTTPS enforced on Vercel
-- ✅ Environment variables protected
-- ✅ CORS headers configurable
-- ✅ Rate limiting ready
 
-## ⚙️ Configuration
 
-### Customize Settings
-
-Edit `app/api/paste/route.js`:
-```javascript
-const MAX_PASTE_SIZE = 1024 * 1024;  // 1MB limit
-const DEFAULT_TTL = 86400;           // 24 hours
-const MAX_VIEWS = 100;               // Max view limit
-```
 
 ## 📊 Performance
 
