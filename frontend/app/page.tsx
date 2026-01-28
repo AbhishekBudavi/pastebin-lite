@@ -48,14 +48,13 @@ export default function Home() {
       }
 
       const data = await response.json();
-      setSuccess(`✅ Paste created successfully!`);
+      setSuccess(`Paste created successfully!`);
       setSuccessUrl(data.url);
       setContent('');
       setTtl('');
       setViewLimit('');
 
-      // Don't auto-redirect - let user manually view or copy link
-      // Remove the setTimeout that redirects
+     
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create paste');
     } finally {

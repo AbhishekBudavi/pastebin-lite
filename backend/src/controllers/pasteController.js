@@ -17,7 +17,6 @@ const createPasteHandler = async (req, res, next) => {
   try {
     const { content, ttl, view_limit } = req.body;
 
-    // Validate content
     if (!validateContent(content)) {
       return res.status(400).json({
         error: 'Bad request',
@@ -25,20 +24,15 @@ const createPasteHandler = async (req, res, next) => {
       });
     }
 
-    // Parse optional parameters
     const ttlSeconds = parseTTL(ttl);
     const viewLimit = parseViewLimit(view_limit);
 
-    // Generate unique paste ID
     const pasteId = generatePasteId();
 
-    // Calculate expiry time
     const expiresAt = calculateExpiryTime(ttlSeconds, req.testNow);
 
-    // Create paste in database
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
 
-    // Return response with shareable URL
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const pasteUrl = `${baseUrl}/paste/${result.id}`;
 
@@ -55,8 +49,6 @@ const createPasteHandler = async (req, res, next) => {
 const getPastePreviewHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    // Fetch paste from database (read-only)
     const paste = await getPaste(id, req.testNow);
 
     if (!paste) {
@@ -66,7 +58,6 @@ const getPastePreviewHandler = async (req, res, next) => {
       });
     }
 
-    // Return paste WITHOUT decrementing views
     res.json({
       id: paste.id,
       content: paste.content,
@@ -77,16 +68,9 @@ const getPastePreviewHandler = async (req, res, next) => {
     next(err);
   }
 };
-
-/**
- * Get paste and decrement view count
- * GET /api/paste/:id
- */
 const getPasteHandler = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    // Fetch paste from database
     const paste = await getPaste(id, req.testNow);
 
     if (!paste) {
@@ -96,7 +80,6 @@ const getPasteHandler = async (req, res, next) => {
       });
     }
 
-    // Decrement views if there's a view limit
     if (paste.views_remaining !== null) {
       const decremented = await decrementViews(id);
 
@@ -106,8 +89,6 @@ const getPasteHandler = async (req, res, next) => {
           message: 'The requested paste does not exist or has expired',
         });
       }
-
-      // Fetch updated paste to get new remaining views count
       const updatedPaste = await getPaste(id, req.testNow);
       if (updatedPaste) {
         paste.views_remaining = updatedPaste.views_remaining;
@@ -125,10 +106,6 @@ const getPasteHandler = async (req, res, next) => {
   }
 };
 
-/**
- * Health check endpoint
- * GET /api/health
- */
 const healthCheckHandler = async (req, res, next) => {
   try {
     const { query } = require('../db/pool');

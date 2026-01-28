@@ -15,41 +15,31 @@ const { query } = require('./db/pool');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ============================================
-// Middleware
-// ============================================
+
 app.use(cors());
 app.use(express.json());
 app.use(testTimeMiddleware);
 
-// ============================================
-// Routes
-// ============================================
 app.use('/api', pasteRoutes);
 
-// ============================================
-// Error Handling
-// ============================================
+
 app.use(notFound);
 app.use(errorHandler);
 
-// ============================================
-// Server Initialization
-// ============================================
 async function startServer() {
   try {
-    // Test database connection
+   
     console.log('Checking database connection...');
     await query('SELECT 1');
     console.log('✓ Database connected');
 
-    // Initialize schema
+
     console.log('Initializing database schema...');
     await initializeSchema();
     console.log('✓ Schema initialized');
 console.log(process.env.NEXT_PUBLIC_APP_URL);
 
-    // Start server
+
     app.listen(PORT, () => {
       console.log(`✓ Server running on http://localhost:${PORT}`);
       console.log(`  API: http://localhost:${PORT}/api`);

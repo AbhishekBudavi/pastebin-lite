@@ -9,7 +9,6 @@ const config = {
   port: parseInt(process.env.DB_PORT || '5432'),
 };
 
-// Connection pool for better performance and concurrency handling
 const pool = new pg.Pool(config);
 
 pool.on('error', (err) => {

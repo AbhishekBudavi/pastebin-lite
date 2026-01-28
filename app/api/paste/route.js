@@ -8,7 +8,7 @@ import {
 } from '@/lib/utils/helpers';
 import { createPaste } from '@/lib/db/operations';
 
-// Mark route as dynamic - cannot be cached/prerendered
+
 export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
@@ -25,7 +25,6 @@ export async function POST(request) {
       );
     }
 
-    // Support deterministic time for testing via header
     const testNow = request.headers.get('X-Test-Now');
     
     const ttlSeconds = parseTTL(ttl);
@@ -35,16 +34,16 @@ export async function POST(request) {
 
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
 
-    // Get the base URL - try multiple methods for different environments
+ 
     let baseUrl = process.env.NEXT_PUBLIC_APP_URL;
     
     if (!baseUrl) {
-      // Method 1: Use Vercel's built-in URL (for Vercel deployments)
+  
       if (process.env.VERCEL_URL) {
         const protocol = process.env.VERCEL_ENV === 'production' ? 'https' : 'https';
         baseUrl = `${protocol}://${process.env.VERCEL_URL}`;
       }
-      // Method 2: Extract from request URL
+  
       else if (request.url) {
         try {
           const requestUrl = new URL(request.url);
@@ -53,7 +52,7 @@ export async function POST(request) {
           baseUrl = 'http://localhost:3000';
         }
       }
-      // Method 3: Try request headers
+ 
       else {
         const origin = request.headers.get('origin');
         const xForwardedProto = request.headers.get('x-forwarded-proto');
@@ -71,7 +70,7 @@ export async function POST(request) {
     
     const pasteUrl = `${baseUrl}/paste/${result.id}`;
     
-    // Log for debugging
+
     console.log('🔗 Generated paste URL:', {
       baseUrl,
       pasteUrl,

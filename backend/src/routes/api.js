@@ -14,26 +14,9 @@ import {
 
 const router = express.Router();
 
-/**
- * POST /api/paste
- * Create a new paste
- *
- * Body:
- *   content (string, required): The paste content
- *   ttl (number, optional): Time to live in seconds
- *   view_limit (number, optional): Maximum number of views allowed
- *
- * Response:
- *   {
- *     id: string,
- *     url: string
- *   }
- */
 router.post('/paste', async (req, res, next) => {
   try {
     const { content, ttl, view_limit } = req.body;
-
-    // Validate content
     if (!validateContent(content)) {
       return res.status(400).json({
         error: 'Bad request',
@@ -41,20 +24,15 @@ router.post('/paste', async (req, res, next) => {
       });
     }
 
-    // Parse optional parameters
+
     const ttlSeconds = parseTTL(ttl);
     const viewLimit = parseViewLimit(view_limit);
 
-    // Generate unique paste ID
     const pasteId = generatePasteId();
 
-    // Calculate expiry time
     const expiresAt = calculateExpiryTime(ttlSeconds, req.testNow);
 
-    // Create paste in database
     const result = await createPaste(pasteId, content, expiresAt, viewLimit);
-
-    // Return response with shareable URL
     const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const pasteUrl = `${baseUrl}/paste/${result.id}`;
 
@@ -67,31 +45,9 @@ router.post('/paste', async (req, res, next) => {
   }
 });
 
-/**
- * GET /api/paste/preview/:id
- * Preview paste WITHOUT decrementing views
- * 
- * Used for UI rendering and page reloads
- * Does NOT mutate state
- * 
- * Response:
- *   {
- *     id: string,
- *     content: string,
- *     remaining_views: number | null,
- *     expires_at: timestamp | null
- *   }
- *
- * Returns 404 if:
- *   - Paste doesn't exist
- *   - Paste has expired
- *   - View limit exhausted (but doesn't decrement)
- */
 router.get('/paste/preview/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    // Fetch paste from database (read-only)
     const paste = await getPaste(id, req.testNow);
 
     if (!paste) {
@@ -100,8 +56,6 @@ router.get('/paste/preview/:id', async (req, res, next) => {
         message: 'The requested paste does not exist or has expired',
       });
     }
-
-    // Return paste WITHOUT decrementing views
     res.json({
       id: paste.id,
       content: paste.content,
@@ -113,39 +67,6 @@ router.get('/paste/preview/:id', async (req, res, next) => {
   }
 });
 
-/**
- * GET /api/paste/:id
- * CONSUME a paste view (decrements view count)
- * 
- * Use /api/paste/preview/:id for read-only access
- * Use this endpoint only when explicitly consuming a view
- *
- * Headers (optional):
- *   x-test-now: ISO timestamp for testing time-based features
- *
- * Response:
- *   {
- *     id: string,
- *     content: string,
- *     remaining_views: number | null,
- *     expires_at: timestamp | null
- *   }
- *
- * Returns 404 if:
- *   - Paste doesn't exist
- *   - Paste has expired
- *   - View limit exhausted
- *
- * IMPORTANT: This endpoint MUTATES state (decrements views)
- * For UI rendering/reloads, use /api/paste/preview/:id instead
- *   - Paste doesn't exist
- *   - Paste has expired
- *   - View limit exhausted
- *
- * IMPORTANT: View count decrements ONLY once per actual user view
- * Multiple requests from same browser session should NOT decrement
- * (Frontend handles session tracking via sessionStorage)
- */
 router.get('/paste/:id', async (req, res, next) => {
   try {
     const { id } = req.params;

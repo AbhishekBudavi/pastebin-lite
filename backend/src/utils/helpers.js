@@ -1,10 +1,5 @@
 const crypto = require('crypto');
 
-/**
- * Generate a unique, URL-safe paste ID
- * 10 characters alphanumeric = ~52 bits of entropy
- * Collision probability negligible for practical use
- */
 function generatePasteId() {
   return crypto
     .randomBytes(6)
@@ -16,10 +11,6 @@ function generatePasteId() {
     .substring(0, 10);
 }
 
-/**
- * Parse optional TTL parameter (in seconds)
- * Returns null if not provided or invalid
- */
 function parseTTL(ttlSeconds) {
   if (!ttlSeconds) return null;
   const seconds = parseInt(ttlSeconds, 10);
@@ -27,10 +18,6 @@ function parseTTL(ttlSeconds) {
   return seconds;
 }
 
-/**
- * Parse optional view limit parameter
- * Returns null if not provided or invalid
- */
 function parseViewLimit(limit) {
   if (!limit) return null;
   const parsed = parseInt(limit, 10);
@@ -38,9 +25,6 @@ function parseViewLimit(limit) {
   return parsed;
 }
 
-/**
- * Calculate expiry timestamp
- */
 function calculateExpiryTime(ttlSeconds, testNowTime = null) {
   if (!ttlSeconds) return null;
   const now = testNowTime ? new Date(testNowTime) : new Date();
@@ -48,9 +32,6 @@ function calculateExpiryTime(ttlSeconds, testNowTime = null) {
   return expiryTime;
 }
 
-/**
- * Validate content is not empty
- */
 function validateContent(content) {
   return content && typeof content === 'string' && content.trim().length > 0;
 }

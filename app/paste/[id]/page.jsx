@@ -16,11 +16,11 @@ export default function PasteViewer() {
     let isMounted = true;
     const fetchPaste = async () => {
       try {
-        // Check if user already decremented views for this paste in this session
+      
         const sessionKey = `paste_viewed_${pasteId}`;
         const alreadyViewed = typeof window !== 'undefined' && sessionStorage.getItem(sessionKey);
 
-        // On first view, call the decrementing endpoint; on reload, call preview endpoint
+      
         const endpoint = alreadyViewed 
           ? `/api/paste/preview/${pasteId}` 
           : `/api/paste/${pasteId}`;
@@ -43,7 +43,7 @@ export default function PasteViewer() {
         if (isMounted) {
           setPaste(data);
 
-          // Mark paste as viewed in this session to prevent decrementing on reload
+      
           if (typeof window !== 'undefined' && !alreadyViewed) {
             sessionStorage.setItem(sessionKey, 'true');
           }
@@ -132,7 +132,7 @@ export default function PasteViewer() {
 
       <div style={styles.footer}>
         <p>
-          <strong>⚠️ Warning:</strong> This paste will be deleted once it expires
+          <strong>Warning:</strong> This paste will be deleted once it expires
           or reaches its view limit. Never paste sensitive information!
         </p>
       </div>

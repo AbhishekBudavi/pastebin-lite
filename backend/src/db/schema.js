@@ -1,9 +1,5 @@
 const { query } = require('./pool');
 
-/**
- * Initialize database schema
- * Called on application startup
- */
 async function initializeSchema() {
   const statements = [
     `CREATE TABLE IF NOT EXISTS pastes (
@@ -30,17 +26,12 @@ async function initializeSchema() {
     try {
       await query(stmt);
     } catch (err) {
-      // Ignore "already exists" errors
       if (!err.message.includes('already exists')) {
         throw err;
       }
     }
   }
 }
-
-/**
- * Reset database (WARNING: Deletes all data)
- */
 async function resetDatabase() {
   const resetSQL = `
     DROP TABLE IF EXISTS paste_views;
@@ -55,8 +46,6 @@ async function resetDatabase() {
   for (const stmt of statements) {
     await query(stmt);
   }
-
-  // Reinitialize schema
   await initializeSchema();
 }
 

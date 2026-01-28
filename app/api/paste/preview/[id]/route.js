@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getPaste } from '@/lib/db/operations';
 
-// Mark route as dynamic - cannot be cached/prerendered
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(request, { params }) {
   try {
     const { id } = params;
     
-    // Support deterministic time for testing via header
+
     const testNow = request.headers.get('X-Test-Now');
     
     const paste = await getPaste(id, testNow);
