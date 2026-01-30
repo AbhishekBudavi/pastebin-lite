@@ -1,6 +1,8 @@
 # 🚀 Pastebin Lite - Ready for Vercel
 
 A modern, serverless-ready pastebin application built with Next.js and optimized for Vercel deployment.
+# You can Watch the pastebin Lite at Vercel
+[https://pastebin-lite-app-bay.vercel.app?_vercel_share=I2bHIoPIoB01X3HwT12n5sKK2gSL5HtW]
 
 ## ⚡ Features
 
